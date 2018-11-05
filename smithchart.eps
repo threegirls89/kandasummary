@@ -1,0 +1,123 @@
+%!PS-Adobe-3.0 EPSF-3.0
+%%BoundingBox: 0 0 100 100
+%
+% w=\frac{z-1}{z+1}.
+%
+% an image of a straight line z=a, a\in\mathbb{R}
+/resist {
+	3 dict begin
+	/a exch def
+	/cx a 1 a add div def
+	/r 1 1 a add div def
+	newpath
+	cx 0 r 0 360 arc
+	closepath
+	stroke
+	end
+} def
+
+% an image of a straight line z=ib, b\in\mathbb{R}
+/react {
+5 dict begin
+	/b exch def
+		b 0 eq {
+		newpath
+			-1 0 moveto
+			1 0 lineto
+		stroke
+	}{
+		/cx 1 def
+		/cy 1 b div def
+		/r cy def
+		/theta 1 b b mul sub 2 b mul atan 180 add def
+		newpath
+		cx cy r theta 270
+		b 0 gt { arc } {arcn} ifelse
+		stroke
+	} ifelse
+	/end
+} def
+
+%
+% w=\frac{1-y}{1+y}.
+%
+% an image of a straight line z=a, a\in\mathbb{R}
+/conduct {
+	3 dict begin
+	/a exch def
+	/cx a 1 a add div -1 mul def
+	/r 1 1 a add div def
+	newpath
+	cx 0 r 0 360 arc
+	closepath
+	stroke
+	end
+} def
+
+% an image of a straight line z=ib, b\in\mathbb{R}
+/suscept {
+5 dict begin
+	/b exch def
+		b 0 eq {
+		newpath
+			1 0 moveto
+			-1 0 lineto
+		stroke
+	}{
+		/cx -1 def
+		/cy 1 b div def
+		/r cy def
+		/theta 1 b b mul sub -2 b mul atan 180 add def
+		newpath
+		cx cy r theta 270
+		b 0 gt { arcn } {arc} ifelse
+		stroke
+	} ifelse
+	/end
+} def
+
+50 50 translate
+49 49 scale
+0.002 setlinewidth
+
+0 react
+0 resist
+newpath
+0 1 moveto
+0 -1 lineto
+stroke
+
+0.25 resist
+0.5 resist
+1 resist
+2 resist
+4 resist
+
+0.25 react
+0.5 react
+1 react
+2 react
+4 react
+-0.25 react
+-0.5 react
+-1 react
+-2 react
+-4 react
+
+0.25 conduct
+0.5 conduct
+1 conduct
+2 conduct
+4 conduct
+
+0.25 suscept
+0.5 suscept
+1 suscept
+2 suscept
+4 suscept
+-0.25 suscept
+-0.5 suscept
+-1 suscept
+-2 suscept
+-4 suscept
+%%EOF

@@ -1,0 +1,93 @@
+\documentclass{kandasummary}
+\usepackage{txfonts}% timesを使う
+\usepackage[dvipdfmx]{graphicx}
+%
+%%%% enumerateの1段めを(数字)にする 仕様が定められていない？ので今の所クラスファイルに盛り込んでいない
+\def\labelenumi{(\arabic{enumi})}
+%
+\begin{document}
+\title{某某某某某専卒業研究発表要旨用クラスファイル\texttt{kandasummary.cls}の製作}
+\engtitle{A development of \texttt{kandasummary.cls} for typesetting a summary of graduation thesis%
+\thanks{2018年11月5日 某某某某某某専門学校電子工学科 卒業研究発表要旨集}}
+\author{すりーがーるずはちじゅうきゅう}
+\engauthor{threegirls89\thanks{指導教員 何樫垂逸}}%
+%
+\maketitle
+%
+\section{目的}
+某某某某某某専門学校電子工学科においては卒業研究が必修であり，学生は研究発表を必ず行う。
+この卒業研究発表に用いる要旨を作成する際に\LaTeX{}を使用する学生は少ない？が，\LaTeX{}においては書式の細かな指定は煩雑であるため，
+本クラスファイルは卒業研究発表要旨を書く際に指定されている書式を\LaTeX{}で容易に実現するために作成された。
+
+筆者は，2014年頃に先代の書式指定スタイルファイル\texttt{kandasummary.sty}を製作した。
+2018年に\texttt{kandasummary.sty}のメンテナンスの要望を頂いた際に設計があまりにも古いため，クラスファイルを作り直すことにした。
+本クラスファイルは2018年現在和文論文，レポート組版で広く用いられるクラスファイル\texttt{jsarticle.cls}をベースに，
+所々のパラメタを\texttt{kandasummary.sty}に合わせたものである。
+
+\section{仕様}
+本クラスファイルは自身が文書クラス（文書の大域的体裁）を定義する。
+このため，先代のような他の文書クラスの下で使うスタイルファイルと異なり，記述された体裁が他の文書クラスの影響を受けない利点がある。
+
+\texttt{jsarticle.cls}からの主な変更点を示す。
+
+\begin{enumerate}
+\item 
+表題の書式，表示内容の変更と，フォントサイズ毎の行間，章番号，箇条書き周りの縦横空白の量の再定義を行った。
+これらについては，情報理論とその応用学会大会予稿用クラスファイル\texttt{SITA2001.sty}を通信信号処理研究室で改変した\texttt{kandaj.sty}を参考にした。
+\item
+2段組における脚注を1段組とした。
+これを実現するために版面の最下部に2段抜きの浮動体を置き，その中に脚注を出力している。
+この方法は2013年度通信信号処理研究室の学生による卒業研究発表要旨の\texttt{tex}ファイルを参考にした。
+\item
+和文組版でも図名，表名を英文にするように改めた。
+例えば，\figref{fig:ex}のようになる。
+\end{enumerate}
+
+\section{使用方法}
+本クラスファイルの使用方法を述べる。
+
+\begin{enumerate}
+\item 1行目に
+\begin{flushleft}
+\verb|\documentclass[オプション]{kandasummary}|
+\end{flushleft}
+と書く。
+特に重要なオプションは\texttt{onecolumn}，\texttt{twocolumn}である。
+それぞれのオプションは本文を1段組，2段組にすることを意味する。
+省略時は\texttt{twocolumn}となる。
+2段組の場合は\texttt{nidanfloat.sty}が必須であるため，本クラスファイルと同じディレクトリに配置する必要がある。
+本文で\verb|\usepackage|する必要はない。
+
+他のオプションは特に触る必要はない。
+特に，フォントサイズはデフォルトで10ptを使用するように定義されているが，他のサイズに変更すると所与のフォーマットに違反するので，使用しない。
+
+\item タイトルを出力する。
+タイトル出力用の命令には
+\begin{flushleft}
+\verb|\title|，\verb|\engtitle|，\verb|\author|，\verb|\engauthor|，\verb|\thanks|，\verb|\maketitle|
+\end{flushleft}
+がある。
+機能は順に，日本語タイトル，英語タイトル，日本語著者名，英語著者名，タイトル中の脚注，タイトル出力である。
+タイトル，著者名の指定は\verb|\maketitle|の前に全て行う必要がある。
+
+\item \verb|\maketitle|以降に本文を通常通り書く。
+\end{enumerate}
+
+
+\section{結果}
+本クラスファイルを使用した文書の組版結果は本稿そのものである。
+必要ならば本稿の\texttt{tex}ファイルも参照されたい。
+
+
+\section{まとめ}
+卒業研究発表要旨の書式をクラスファイルにまとめることにより，煩雑な書式設定作業を要旨作成から分離することが出来，要旨作成の効率化や複数人の間における要旨の書式の統一が出来ると考えられる。
+
+
+\begin{figure}[b]
+\centering
+\includegraphics[width=0.32\textwidth]{smithchart.eps}
+\caption{An example of a figure.}
+\label{fig:ex}
+\end{figure}
+
+\end{document}
