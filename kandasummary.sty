@@ -1,0 +1,264 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  modified kandaj style file
+%  2015.03.08 第1版
+%  作成 2014年度通信信号処理研究室 三好 正太
+%
+%
+%  使用方法
+%  (1) プリアンブル(\begin{document}より上の領域)に
+%      \usepackage[option]{kandasummary}
+%      と書く. optionはonecolumn, twocolumnのどちらか. 省略時はtwocolumn.
+%      本文の一段組, 二段組を指定する.
+%  (2) \maketitleの前に
+%        \title{和文タイトル}
+%        \engtitle{英文タイトル}
+%        \author{和文氏名}
+%        \engauthor{英文氏名}
+%      を指定する.
+%      タイトル中の脚注は\thanks{}で表示できる.
+%  (3) 後は本文をがっつり書くだけ.
+%
+%  変更されるコマンド
+%        \maketitle, \thanks, \figurename, \tablename
+%        \thanksで下に印字される文字列が2段ぶち抜きになるように改造した. 引数は改造前と同じ.
+%        \maketitleで使う設定項目を変更した.
+%          \title     和文タイトル
+%          \engtitle  英文タイトル
+%          \author    和文氏名
+%          \engauthor 英文氏名
+%        \figurename, \tablename: 図名, 表名を英語(Fig. , Table. )に変更
+%
+%  kandaj.styでなされた変更
+%  modified SITA2001 style file
+%  変更されるコマンド:
+%        \maketitle, \abstract, 
+%        \baselineskip を指定するコマンド (\normalsize, \large,
+%             ..., \small, \scriptsize, \tiny)
+%        セクションコマンド (\section, ... \subparagraph)
+%        LIST環境縦方向スペーシングパラメータ設定コマンド
+%        脚注スタイル \@makefntext
+%        \sloppy
+%        kandaj.sty:
+%        ラベルと行間の変更
+%
+%  新しいコマンド:
+%        \keywords, \samethanks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\NeedsTeXFormat{LaTeX2e}%
+\ProvidesPackage{kandasummary}[2015/03/08 ver.0.0.1 三好 正太]%
+%
+\def\j@urnalname{kandasummary}
+\def\versi@ndate{Mar. 08, 2015}
+\def\versi@nno{ver.0.0.1}
+\typeout{Option Style `\j@urnalname' (\versi@nno) <\versi@ndate>}
+%
+\typeout{kandasummary.sty: 卒業研究要旨用スタイルファイル, modified  kandaj style file based on SITA2001 style file}
+%
+% kandasummaryのオプション引数で二段組か設定するようにしてみた.
+% \documentclassの方で一段, 二段を設定しないで下さい.
+%
+% スタイルファイルのオプション引数
+% defaultが二段組
+%
+\newif\if@nidan
+\@nidantrue
+\DeclareOption{twocolumn}{\@nidantrue}
+\DeclareOption{onecolumn}{\@nidanfalse}
+\ProcessOptions\relax
+\if@nidan \RequirePackage{nidanfloat} \fi
+%
+\pagestyle{empty}% ヘッダ・フッタとも無し
+%
+\flushbottom
+%
+% 版面のサイズ
+%
+\textwidth 174mm
+\textheight 270mm
+\oddsidemargin -7.4mm
+\evensidemargin -7.4mm
+%\topmargin 4.6mm
+\topmargin -14mm
+\headheight 0pt
+\headsep 0pt
+\footskip 0pt
+\columnsep 7mm
+\parindent 1zw \relax
+%
+% 図名, 表名変更
+%
+\renewcommand{\figurename}{Fig.~}
+\renewcommand{\tablename}{Table.~}
+%
+% 図を詰め込むための設定
+%
+\renewcommand\topfraction{.9}% 頁上部のfloatで占める最大割合.
+\renewcommand\bottomfraction{.9}% 頁下部のfloatで占める最大割合.
+\renewcommand\textfraction{.05}% 1頁のテキスト部の占める最小割合. 
+\renewcommand\floatpagefraction{.5}% floatが単独頁になるときの最小割合. 
+\setcounter{totalnumber}{5}% 1頁のfloatの数
+\setcounter{topnumber}{3}% 頁上部のfloatの数
+\setcounter{bottomnumber}{3}% 頁下部のfloatの数
+%
+% 一段ぶち抜きの\thanks
+%
+\def\thanks#1{\footnotemark\protected@xdef\@thanks{\@thanks \protect\makebox[1zw]{\hss$^\@thefnmark$ }#1\protect\par}%
+}
+\let\@thanks\@empty
+\def\print@thanks{%
+  \begin{figure*}[!b]
+    \everypar={\hangindent=1zw \hangafter=1 \@nobreakfalse\@minipagefalse}%
+    \parindent 0zw\noindent%
+    \footnoterule
+    \rule\z@\footnotesep
+    \noindent
+    \footnotesize
+    \@thanks
+  \end{figure*}%
+}
+%
+% maketitle再定義
+%
+\def\maketitle{%
+  \par
+  \begingroup
+    \def\thefootnote{\fnsymbol{footnote}}
+    \def\@makefnmark{\hbox to 0pt{$^{\@thefnmark}$\hss}}
+    \if@nidan \twocolumn[\@maketitle] \else \@maketitle \fi
+    \ifx\@thanks\empty\else\print@thanks\fi
+  \endgroup
+  \setcounter{footnote}{0}
+  \let\maketitle\relax
+  \let\@maketitle\relax
+  \global\let\thanks\relax
+  \global\let\engauthor\relax
+  \global\let\engtitle\relax
+  \gdef\@thanks{}%
+  \gdef\@author{}%
+  \gdef\@engauthor{}%
+  \gdef\@title{}%
+  \gdef\@engtitle{}%
+  \ifx\@abstract\empty\else{\noindent \small{\bf%
+      Abstract}---\@abstract\par\vskip2pt \noindent\@keywords\par}\fi%
+}
+\def\engauthor#1{\gdef\@engauthor{#1}}%
+\def\engtitle#1{\gdef\@engtitle{#1}}%
+\let\@engauthor\empty
+\let\@engtitle\empty
+%
+% Modified The 24th Symposium on Information Theory and Its Applications (SITA2001)
+% Kobe, Hyogo, Japan, Dec. 4 - 7, 2001
+%
+\def\@maketitle{%
+  \newpage \null
+  \begin{center}
+    {\Large \bfseries \@title}\par
+    \ifx\@engtitle\empty\else\vspace{6pt}\@engtitle\par\fi
+    \vskip 1.0em
+    {%
+      \large \lineskip .5em
+      \begin{tabular}[t]{c} \@author \ifx\@engauthor\empty\else \\ \@engauthor \fi \end{tabular}%
+    }
+  \end{center}
+  \par \vskip 1.0em%
+}
+%
+\newcommand{\samethanks}[1]{$^{\@fnsymbol{#1}}$}
+%
+\long\def\abstract#1{\def\@abstract{#1}}
+\def\keywords#1{\def\@keywords{\noindent\textbf{Keywords}---#1}}
+\def\@abstract{} \def\@keywords{}
+%
+%%%%%%%%%%%%% start of optional setting %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% 各大きさのフォントの baselineskip の設定
+%
+%
+%%%% H. Kuwakado
+%%%%\def\@normalsize{\@setsize\normalsize{14pt}\xpt\@xpt
+\def\@normalsize{\@setsize\normalsize{13pt}\xpt\@xpt
+\abovedisplayskip 10pt plus2pt minus5pt\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip \z@ plus3pt\belowdisplayshortskip 6pt plus3pt minus3pt
+\let\@listi\@listI}
+%%%% H. Kuwakado
+%%%%\def\small{\@setsize\small{12pt}\ixpt\@ixpt
+\def\small{\@setsize\small{11pt}\ixpt\@ixpt
+\abovedisplayskip 8.5pt plus 3pt minus 4pt\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip \z@ plus2pt\belowdisplayshortskip 4pt plus2pt minus 2pt
+\def\@listi{\leftmargin\leftmargini \topsep 1pt plus 1pt minus 1pt\parsep 0pt
+plus 1pt
+\itemsep \parsep}}
+\def\footnotesize{\@setsize\footnotesize{11pt}\viiipt\@viiipt
+\abovedisplayskip 6pt plus 2pt minus 4pt\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip \z@ plus 1pt\belowdisplayshortskip 3pt plus 1pt minus
+2pt
+\def\@listi{\leftmargin\leftmargini \topsep 1pt plus 1pt minus 1pt\parsep 0pt
+plus 1pt minus 1pt
+\itemsep \parsep}}
+\def\scriptsize{\@setsize\scriptsize{8pt}\viipt\@viipt}
+\def\tiny{\@setsize\tiny{6pt}\vpt\@vpt}
+\def\large{\@setsize\large{18pt}\xiipt\@xiipt}
+\def\Large{\@setsize\Large{22pt}\xivpt\@xivpt}
+\def\LARGE{\@setsize\LARGE{25pt}\xviipt\@xviipt}
+\def\huge{\@setsize\huge{25pt}\xxpt\@xxpt}
+\def\Huge{\@setsize\Huge{30pt}\xxvpt\@xxvpt}
+\normalsize 
+%
+%
+% リスト 環境のパラメータ設定
+%
+%
+\def\@listI{\leftmargin\leftmargini \parsep 0pt plus 1pt\topsep 1.5pt
+plus 1pt minus 1pt\itemsep 0pt}
+\let\@listi\@listI
+\@listi 
+\def\@listii{\leftmargin\leftmarginii
+ \labelwidth\leftmarginii\advance\labelwidth-\labelsep
+ \topsep 1pt plus 1pt minus 1pt
+ \parsep 0pt plus 1pt
+ \itemsep 0pt}
+\def\@listiii{\leftmargin\leftmarginiii
+ \labelwidth\leftmarginiii\advance\labelwidth-\labelsep
+ \topsep 0pt plus 1pt
+ \parsep \z@ \partopsep 1pt plus 0pt minus 1pt
+ \itemsep 0pt}
+%
+%
+%  section, subsection, subsubsection, paragraph, subparagraph の上下
+%  のスペーシングの設定
+%
+%
+\def\section{\@startsection {section}{1}{\z@}{5pt plus 0.5ex minus 
+ .2ex}{0.001pt plus .2ex}{\font@s}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{5pt plus 1pt minus 
+ 1pt}{0.001pt plus 1pt}{\font@ss}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{3pt plus 
+1pt}{0.001pt plus 1pt}{\font@sss}}
+\def\paragraph{\@startsection
+ {paragraph}{4}{\z@}{0.001pt plus 0.5ex}{-1em}{\normalsize\bf}}
+\def\subparagraph{\@startsection
+ {subparagraph}{4}{\parindent}{0.001pt plus 0.5ex
+}{-1em}{\normalsize\bf}}
+%
+\def\sectionfont#1#2#3{\gdef\font@s{#1}\gdef\font@ss{#2}\gdef\font@sss{#3}}
+\sectionfont{\large\bf}{\normalsize\bf}{\normalsize\bf}
+
+%
+\def\sectionfont#1#2#3{\gdef\font@s{#1}\gdef\font@ss{#2}\gdef\font@sss{#3}}
+\sectionfont{\large\bf}{\normalsize\bf}{\normalsize\bf}
+%
+%
+% 脚注のスタイル設定
+%
+%
+\long\def\@makefntext#1{%
+\everypar={\hangindent=1zw \hangafter=1 \@nobreakfalse\@minipagefalse}%
+\parindent 1zw\noindent%
+\hbox to 1zw{\hss$^{\@thefnmark}$ }%
+%\hspace{2.25mm}%
+\strut #1\strut}
+%
+
+% end of file
