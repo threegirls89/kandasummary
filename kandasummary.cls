@@ -884,13 +884,19 @@
 % maketitle，thanksをkandaj.styのものに再定義
 % 一段ぶち抜きの\thanks
 %
-\if@twocolumn
+\if@twocolumn% 2段組でぶち抜きの図にはnidanfloatが必要
   \RequirePackage{nidanfloat}
+  \renewcommand{\thanks}[1]{\footnotemark\protected@xdef\@thanks{\@thanks%
+  \protect\makebox[1zw]{$^\@thefnmark$}#1\protect\par}%
+  }
 \fi
-\def\thanks#1{\footnotemark\protected@xdef\@thanks{\@thanks \protect\makebox[1zw]{\hss$^\@thefnmark$ }#1\protect\par}%
-}
 \let\@thanks\@empty
 \def\print@thanks{%
+  \if@twocolumn% 2段組の時，floatを下に置き脚注をその内に出力する
+  \def\footnoterule{% twocolumnの時もonecolumnと同じ見た目の長さになるよう再定義
+    \kern-3\jsc@mpt
+    \hrule width 0.4\textwidth height 0.4\jsc@mpt
+    \kern 2.6\jsc@mpt}
   \begin{figure*}[!b]
     \everypar={\hangindent=1zw \hangafter=1 \@nobreakfalse\@minipagefalse}%
     \parindent 0zw\noindent%
@@ -900,14 +906,25 @@
     \footnotesize
     \@thanks
   \end{figure*}%
+  \else% 1段組の時，脚注を通常利用する
+    \@thanks
+  \fi
 }
 \newcommand{\maketitle}{%
   \par
   \begingroup
-    \def\thefootnote{\fnsymbol{footnote}}
-    \def\@makefnmark{\hbox to \z@{$^{\@thefnmark}$\hss}}
-    \if@twocolumn \twocolumn[\@maketitle] \else \@maketitle \fi
-    \ifx\@thanks\empty\else\print@thanks\fi
+    \renewcommand\thefootnote{\fnsymbol{footnote}}
+    \def\@makefnmark{\rlap{$^\@thefnmark$}}%
+    \long\def\@makefntext##1{\leftskip\z@
+      \parindent 1zw\noindent
+      \makebox[1zw]{$^\@thefnmark$}##1}%
+    \if@twocolumn
+      \twocolumn[\@maketitle]%
+    \else
+      \let\footnote\thanks
+      \@maketitle%
+    \fi
+  \ifx\@thanks\empty\else\print@thanks\fi
   \endgroup
   \setcounter{footnote}{0}
   \let\maketitle\relax
